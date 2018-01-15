@@ -14,7 +14,11 @@ _I have still included the Linux executable which can be run with :_ `./vimim <f
 ## About
 The goal of this project was to create a Vim-like text editor with robust, maintainable code that follows the MVC design pattern. The program aimed to follow good OOP design principles such as the SOLID principles and low-coupling/high cohesion. One of the main focuses of the project was to maintain high resilience to change (open/closed principle), and the various design decisions reflect such ideals.
 
+![vimim1](Assets/vimim1.PNG )
+![vimim2](Assets/vimim2.PNG )
+
 Vimim is not a complete replica of Vim, but it's pretty close in most of the main commands. 
+
 Here's what is currently implemented :
 
  - `a` : Append text after the cursor times
@@ -82,7 +86,7 @@ Additionally, there is also :
  - Support for multiple files
 	 - Still kind of rough at the moment. Can open multiple files with `./vimim <file1> <file2> ...`, and then switch in between the different files with `:next` and `:prev`
  - Numeric Multipliers: Almost all of these commands support multipliers, as in you can add a number before to repeat the value multiple times. 
-	 - For example: `3d4/abc` will find the 4th instance of `abc` after the cursor and delete everything from the cursor to `abc`, then repeat all of that again 3 times. Why you would ever use such a command is beyond me, but it's there if you ever need it
+	 - For example: `3d4/abc` will find the 4th instance of `abc` after the cursor and delete everything from the cursor to `abc`, then repeat all of that again 2 more times (3 times total). Why you would ever use such a command is beyond me, but it's there if you ever need it ;)
 
 Future Things to Implement:
 
@@ -90,3 +94,4 @@ Future Things to Implement:
  - The `.` command
  - Regex pattern searching
  - Split screen (for multiple files)
+
