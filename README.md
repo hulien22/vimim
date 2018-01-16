@@ -1,6 +1,7 @@
+
 # vimim
 
-Vim IMitation ~ A Vim-like text editor made in C++
+**Vim IMitation** ~ A Vim-like text editor made in C++ (using ncurses)
 
 Created by : Julien He & Kevin Sangbeom Park (Dec 2017)
 
@@ -17,6 +18,7 @@ The goal of this project was to create a Vim-like text editor with robust, maint
 ![vimim1](Assets/vimim1.PNG )
 ![vimim2](Assets/vimim2.PNG )
 
+## Features
 Vimim is not a complete replica of Vim, but it's pretty close in most of the main commands. 
 
 Here's what is currently implemented :
@@ -95,3 +97,33 @@ Future Things to Implement:
  - Regex pattern searching
  - Split screen (for multiple files)
 
+## How it works
+The main 'piece' of vimim is a ***piece table*** that is used as the primary data structure. Piece tables are really useful data structures for text editors as they allow for more efficiency when dealing with large files, provide easy implementations for infinite undoes and redoes, and have efficient space usage (for more info on piece tables and their effectiveness, see [Charles Crowley's paper](http://www.cs.unm.edu/~crowley/papers/sds.pdf) on the subject).
+
+There are various ways that piece tables can be implemented, but the way I chose to implement it was through a **piece chain / doubly-linked list**.
+
+First, we start off by initializing **two buffers**:
+ 
+ - One is the *file buffer* - this holds the original file text and is read-only
+ - The second is the *add buffer* - this is where any new text additions go. This buffer is append-only
+ - The essential thing to realize here is that text is never deleted (it is a *persistent data structure*), and as such, this allows for efficient and infinite undoes/redoes
+
+We also initialize two null nodes / pieces which are the head and tail of our piece table, plus a piece for the entire text. Each piece keeps track of its *previous and next piece*, as well as a *buffer*, *start index*, and *length*. The pointers to the other pieces are for the doubly-linked list, and the buffer/indices data is so that we know what text is associated with the piece. By using such indices, we have no need to copy text to each piece; any text we need is always in a buffer, and we can simply access it through pointers. 
+
+![piecetable1](Assets/piecetable1.png )
+
+Whenever we add more text to the file, we append this text to the end of the add buffer, and create a new piece at the location of the insert, with pointers to the text in the add buffer. 
+
+Of course there are plenty of edge cases, but in general whenever we *insert*, we split a piece into two smaller pieces, add text to the add buffer, and insert a new piece with that text in between the two small pieces.
+
+For *deleting*, we simply need to replace pieces with modified ones that point to slightly different locations in the buffer (depending on how much was deleted).
+
+*Replacing* is essentially just deleting and inserting at the same time.
+
+For *undoing and redoing*, the implementation is actually quite simple with a piece table. When we remove a piece, we simply detach it by changing the pointers that point to that piece. We then add the deleted piece to the undo stack. HOWEVER, this deleted piece still points to its old previous and next piece. So when we want to revert this change, we simply need to pop the piece off the stack and follow its pointers to reattach it to the list. Similarly, we would then push whatever just got removed and put it onto the redo stack.
+
+![piecetable2](Assets/piecetable2.png )
+
+This results in extremely efficient undoes/redoes in terms of space and time, as we do not need to store deleted text, only their locations in the buffers. 
+
+An additional element that I added for efficiency purposes, is that each piece also *caches the number and locations of all the newlines* within its text. This is because it is often necessary to access lines instead of pieces, so this caching saves a lot of additional calculations. 
