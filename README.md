@@ -11,6 +11,11 @@ _**NOTE** : This project was a final assignment for my (Advanced) Object-Oriente
 _I have still included the Linux executable which can be run with :_ `./vimim <filename(s)...>`
 
 ----------
+## Table of Contents
+
+1. [About](#about)
+3. [Features](#features)
+6. [How it works](#how-it-works)
 
 ## About
 The goal of this project was to create a Vim-like text editor with robust, maintainable code that follows the MVC design pattern. The program aimed to follow good OOP design principles such as the SOLID principles and low-coupling/high cohesion. One of the main focuses of the project was to maintain high resilience to change (open/closed principle), and the various design decisions reflect such ideals.
